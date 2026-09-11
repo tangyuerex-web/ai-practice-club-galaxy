@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="A hand-controlled three-dimensional galaxy by AI Practice Club." />
+    <title>Gesture Galaxy · AI Practice Club</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Cellipse cx='16' cy='16' rx='12' ry='4.5' fill='none' stroke='%23fff' stroke-width='1.5' transform='rotate(-25 16 16)'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23fff'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="experience" id="experience" aria-label="Gesture-controlled galaxy">
+      <canvas id="galaxy" aria-hidden="true"></canvas>
+
+      <section class="cover" id="cover" aria-labelledby="coverTitle">
+        <div class="cover-topline">
+          <span>AI PRACTICE CLUB</span>
+          <button class="language-button" id="coverLanguageButton" type="button" aria-label="Switch language">中文</button>
+        </div>
+        <div class="cover-content">
+          <span class="specimen-number">EXP—01</span>
+          <h1 id="coverTitle">GESTURE<br /><i>GALAXY</i></h1>
+          <p data-copy="coverSubtitle">A hand-controlled field of light.</p>
+          <button class="enter-button" id="enterButton" type="button">
+            <span data-copy="enter">ENTER THE FIELD</span><b aria-hidden="true">↗</b>
+          </button>
+          <small data-copy="coverPrivacy">Camera processing stays on this device.</small>
+        </div>
+        <div class="cover-index"><span>VISION</span><span>PARTICLES</span><span>GESTURE</span></div>
+      </section>
+
+      <section class="lab" id="lab" aria-hidden="true">
+        <header class="lab-brand">
+          <span class="orbital-mark" aria-hidden="true"><i></i></span>
+          <div><strong>GESTURE GALAXY</strong><small>AI PRACTICE CLUB · EXP 01</small></div>
+        </header>
+
+        <aside class="control-rail" aria-label="Gesture and camera controls">
+          <div class="rail-head">
+            <div>
+              <small data-copy="inputLabel">VISION INPUT</small>
+              <strong id="trackingState" data-copy="loading">LOADING</strong>
+            </div>
+            <button class="language-button" id="languageButton" type="button" aria-label="Switch language">中文</button>
+          </div>
+
+          <div class="camera-frame" id="cameraFrame">
+            <video id="webcam" autoplay muted playsinline></video>
+            <canvas id="handOverlay" aria-hidden="true"></canvas>
+            <div class="camera-grid" aria-hidden="true"></div>
+            <div class="camera-corners" aria-hidden="true"></div>
+            <span class="camera-state"><i></i><b data-copy="local">LOCAL</b></span>
+            <button class="retry-button" id="cameraButton" type="button" hidden data-copy="retryCamera">RETRY CAMERA</button>
+          </div>
+
+          <div class="coordinate-readout" aria-label="Index finger coordinates">
+            <span data-copy="target">INDEX TARGET</span>
+            <output id="coordinateOutput">X +0.00&nbsp;&nbsp;Y +0.00</output>
+          </div>
+
+          <ol class="gesture-list">
+            <li class="active" data-gesture="aim"><b>01</b><span><strong data-copy="aimTitle">INDEX FINGER</strong><small data-copy="aimHint">Aim the target</small></span></li>
+            <li data-gesture="ripple"><b>02</b><span><strong data-copy="rippleTitle">PUSH FORWARD</strong><small data-copy="rippleHint">Shake the particles</small></span></li>
+            <li data-gesture="burst"><b>03</b><span><strong data-copy="burstTitle">FIST → OPEN</strong><small data-copy="burstHint">Trigger a supernova</small></span></li>
+            <li data-gesture="rotate"><b>04</b><span><strong data-copy="rotateTitle">OPEN + MOVE</strong><small data-copy="rotateHint">Rotate in 3D</small></span></li>
+          </ol>
+
+          <p class="fallback-hint" id="fallbackHint" data-copy="fallback">Pointer fallback: move to aim, click for ripple, drag to rotate, double-click for supernova.</p>
+        </aside>
+
+        <div class="target-reticle" id="targetReticle" aria-hidden="true"><i></i><span></span></div>
+        <div class="event-label" id="eventLabel" role="status" aria-live="polite"><strong>SUPERNOVA</strong><small>EVENT DETECTED</small></div>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
