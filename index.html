@@ -24,9 +24,23 @@
           <span class="specimen-number">EXP—01</span>
           <h1 id="coverTitle">GESTURE<br /><i>GALAXY</i></h1>
           <p data-copy="coverSubtitle">A hand-controlled field of light.</p>
-          <button class="enter-button" id="enterButton" type="button">
-            <span data-copy="enter">ENTER THE FIELD</span><b aria-hidden="true">↗</b>
-          </button>
+          <div class="cover-actions">
+            <button class="enter-button" id="enterButton" type="button">
+              <span data-copy="enter">ENTER THE FIELD</span><b aria-hidden="true">↗</b>
+            </button>
+            <div class="quality-picker">
+              <button class="quality-button" id="qualityButton" type="button" aria-expanded="false" aria-controls="qualityMenu">
+                <span data-copy="customParticles">CUSTOM PARTICLES</span><b id="qualityLabel">20K</b>
+              </button>
+              <div class="quality-menu" id="qualityMenu" role="listbox" aria-label="Particle count" hidden>
+                <button type="button" role="option" data-count="5000"><span>01 · LIGHT</span><b>5K</b></button>
+                <button type="button" role="option" data-count="10000"><span>02 · STANDARD</span><b>10K</b></button>
+                <button class="selected" type="button" role="option" data-count="20000" aria-selected="true"><span>03 · DENSE</span><b>20K</b></button>
+                <button type="button" role="option" data-count="35000"><span>04 · ULTRA</span><b>35K</b></button>
+                <button type="button" role="option" data-count="50000"><span>05 · MAXIMUM</span><b>50K</b></button>
+              </div>
+            </div>
+          </div>
           <small data-copy="coverPrivacy">Camera processing stays on this device.</small>
         </div>
         <div class="cover-index"><span>VISION</span><span>PARTICLES</span><span>GESTURE</span></div>
@@ -63,12 +77,12 @@
 
           <ol class="gesture-list">
             <li class="active" data-gesture="aim"><b>01</b><span><strong data-copy="aimTitle">INDEX FINGER</strong><small data-copy="aimHint">Aim the target</small></span></li>
-            <li data-gesture="ripple"><b>02</b><span><strong data-copy="rippleTitle">PUSH FORWARD</strong><small data-copy="rippleHint">Shake the particles</small></span></li>
-            <li data-gesture="burst"><b>03</b><span><strong data-copy="burstTitle">FIST → OPEN</strong><small data-copy="burstHint">Trigger a supernova</small></span></li>
-            <li data-gesture="rotate"><b>04</b><span><strong data-copy="rotateTitle">OPEN + MOVE</strong><small data-copy="rotateHint">Rotate in 3D</small></span></li>
+            <li data-gesture="burst"><b>02</b><span><strong data-copy="burstTitle">INDEX TAP</strong><small data-copy="burstHint">Trigger a supernova</small></span></li>
+            <li data-gesture="rotate"><b>03</b><span><strong data-copy="rotateTitle">OPEN + MOVE</strong><small data-copy="rotateHint">Rotate without limits</small></span></li>
+            <li data-gesture="zoom"><b>04</b><span><strong data-copy="zoomTitle">SLOW OPEN / CLOSE</strong><small data-copy="zoomHint">Expand or contract</small></span></li>
           </ol>
 
-          <p class="fallback-hint" id="fallbackHint" data-copy="fallback">Pointer fallback: move to aim, click for ripple, drag to rotate, double-click for supernova.</p>
+          <p class="fallback-hint" id="fallbackHint" data-copy="fallback">Pointer fallback: move to aim, click for supernova, drag to rotate, wheel to expand.</p>
         </aside>
 
         <div class="target-reticle" id="targetReticle" aria-hidden="true"><i></i><span></span></div>
