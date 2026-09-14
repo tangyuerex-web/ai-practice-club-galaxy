@@ -17,6 +17,8 @@ const coverLanguageButton = document.querySelector('#coverLanguageButton');
 const qualityButton = document.querySelector('#qualityButton');
 const qualityMenu = document.querySelector('#qualityMenu');
 const qualityLabel = document.querySelector('#qualityLabel');
+const shapeButton = document.querySelector('#shapeButton');
+const shapeLabel = document.querySelector('#shapeLabel');
 
 const TAU = Math.PI * 2;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,6 +26,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const copy = {
   en: {
     coverSubtitle: 'A hand-controlled field of light.', enter: 'ENTER THE FIELD', customParticles: 'CUSTOM PARTICLES',
+    galaxyForm: 'GALAXY FORM', shapeSpiral: 'SPIRAL', shapeSphere: 'SPHERE SHELL',
     coverPrivacy: 'Camera processing stays on this device.', inputLabel: 'VISION INPUT',
     loading: 'LOADING', local: 'LOCAL', target: 'INDEX TARGET', retryCamera: 'RETRY CAMERA',
     aimTitle: 'INDEX FINGER', aimHint: 'Move the target', burstTitle: 'INDEX TAP', burstHint: 'Trigger a supernova',
@@ -35,6 +38,7 @@ const copy = {
   },
   zh: {
     coverSubtitle: '用手势控制一片光的引力场。', enter: '进入星河', customParticles: '自定义粒子数量',
+    galaxyForm: '星团形态', shapeSpiral: '螺旋星河', shapeSphere: '球面星团',
     coverPrivacy: '摄像头数据仅在本机处理。', inputLabel: '视觉输入',
     loading: '正在加载', local: '本地处理', target: '食指目标点', retryCamera: '重试摄像头',
     aimTitle: '移动食指', aimHint: '控制目标坐标', burstTitle: '食指轻点', burstHint: '触发超新星',
@@ -66,6 +70,7 @@ let bursts = [];
 let sparks = [];
 let previousFrameTime = performance.now();
 let manualParticleCount = 20000;
+let galaxyShape = 'spiral';
 let lastHandSeenAt = -Infinity;
 let lastOpenPalm = null;
 let lastHandSpread = null;
@@ -115,9 +120,20 @@ function seedGalaxy(count = preferredParticleCount()) {
 
   const armLimit = Math.floor(count * .82);
   const coreLimit = Math.floor(count * .95);
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
   for (let i = 0; i < count; i++) {
-    if (i < armLimit) {
+    if (galaxyShape === 'sphere') {
+      const vertical = 1 - 2 * (i + .5) / count;
+      const horizontalRadius = Math.sqrt(Math.max(0, 1 - vertical * vertical));
+      const angle = i * goldenAngle;
+      const shellRadius = .9;
+      baseX[i] = Math.cos(angle) * horizontalRadius * shellRadius;
+      baseY[i] = vertical * shellRadius;
+      baseZ[i] = Math.sin(angle) * horizontalRadius * shellRadius;
+      alphas[i] = .88;
+      sizes[i] = .9;
+    } else if (i < armLimit) {
       const radius = .07 + Math.pow(Math.random(), .66) * .98;
       const arm = i % 4;
       const armSpread = .07 + radius * .18;
@@ -211,18 +227,6 @@ function projectParticles(time, delta) {
     let sx = origin.x + yawX * scale * perspective;
     let sy = origin.y + pitchY * scale * perspective;
 
-    if (entered && (currentHandGesture === 'aim' || currentHandGesture === 'point')) {
-      const gravityX = scene.targetX - sx;
-      const gravityY = scene.targetY - sy;
-      const gravityDistanceSq = gravityX * gravityX + gravityY * gravityY;
-      if (gravityDistanceSq < 67600 && gravityDistanceSq > 4) {
-        const gravityDistance = Math.sqrt(gravityDistanceSq);
-        const gravityStrength = Math.pow(1 - gravityDistance / 260, 2) * 46;
-        sx += gravityX / gravityDistance * gravityStrength - gravityY / gravityDistance * gravityStrength * .18;
-        sy += gravityY / gravityDistance * gravityStrength + gravityX / gravityDistance * gravityStrength * .18;
-      }
-    }
-
     for (const burst of liveBursts) {
       const age = (time - burst.start) / 1100;
       const dx = sx - burst.x;
@@ -246,19 +250,33 @@ function drawGalaxy(time, delta) {
   projectParticles(time, delta);
 
   const origin = galaxyOrigin();
-  const coreRadius = Math.min(innerWidth, innerHeight) * .11 * scene.zoom;
-  const glow = ctx.createRadialGradient(origin.x, origin.y, 0, origin.x, origin.y, coreRadius * 2.8);
-  glow.addColorStop(0, 'rgba(255,255,252,.22)');
-  glow.addColorStop(.12, 'rgba(255,255,252,.10)');
-  glow.addColorStop(.52, 'rgba(180,180,176,.025)');
-  glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(origin.x - coreRadius * 3, origin.y - coreRadius * 3, coreRadius * 6, coreRadius * 6);
+  if (galaxyShape === 'spiral') {
+    const coreRadius = Math.min(innerWidth, innerHeight) * .11 * scene.zoom;
+    const glow = ctx.createRadialGradient(origin.x, origin.y, 0, origin.x, origin.y, coreRadius * 2.8);
+    glow.addColorStop(0, 'rgba(255,255,252,.22)');
+    glow.addColorStop(.12, 'rgba(255,255,252,.10)');
+    glow.addColorStop(.52, 'rgba(180,180,176,.025)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(origin.x - coreRadius * 3, origin.y - coreRadius * 3, coreRadius * 6, coreRadius * 6);
+  }
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
   ctx.fillStyle = '#fff';
-  if (particleCount > 12000) {
+  if (galaxyShape === 'sphere') {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = .88;
+    ctx.beginPath();
+    const pointSize = .9;
+    for (let i = 0; i < particleCount; i++) {
+      const x = projectedX[i];
+      const y = projectedY[i];
+      if (x < -2 || x > innerWidth + 2 || y < -2 || y > innerHeight + 2) continue;
+      ctx.rect(x - pointSize * .5, y - pointSize * .5, pointSize, pointSize);
+    }
+    ctx.fill();
+  } else if (particleCount > 12000) {
+    ctx.globalCompositeOperation = 'lighter';
     for (let bucket = 0; bucket < 6; bucket++) {
       ctx.globalAlpha = .11 + bucket * .105;
       ctx.beginPath();
@@ -274,6 +292,7 @@ function drawGalaxy(time, delta) {
       ctx.fill();
     }
   } else {
+    ctx.globalCompositeOperation = 'lighter';
     for (let i = 0; i < particleCount; i++) {
       const x = projectedX[i];
       const y = projectedY[i];
@@ -359,6 +378,9 @@ function setLanguage(next) {
   });
   languageButton.textContent = next === 'en' ? '中文' : 'EN';
   coverLanguageButton.textContent = next === 'en' ? '中文' : 'EN';
+  const shapeKey = galaxyShape === 'sphere' ? 'shapeSphere' : 'shapeSpiral';
+  shapeLabel.textContent = copy[next][shapeKey];
+  shapeButton.setAttribute('aria-label', `${copy[next].galaxyForm}: ${copy[next][shapeKey]}`);
 }
 
 function setTrackingState(kind) {
@@ -684,6 +706,15 @@ qualityMenu.addEventListener('click', (event) => {
   });
   seedGalaxy(count);
   closeQualityMenu();
+});
+
+shapeButton.addEventListener('click', () => {
+  galaxyShape = galaxyShape === 'spiral' ? 'sphere' : 'spiral';
+  const shapeKey = galaxyShape === 'sphere' ? 'shapeSphere' : 'shapeSpiral';
+  shapeLabel.textContent = copy[language][shapeKey];
+  shapeButton.setAttribute('aria-pressed', String(galaxyShape === 'sphere'));
+  shapeButton.setAttribute('aria-label', `${copy[language].galaxyForm}: ${copy[language][shapeKey]}`);
+  seedGalaxy(manualParticleCount);
 });
 
 document.addEventListener('click', (event) => {

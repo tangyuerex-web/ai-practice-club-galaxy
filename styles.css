@@ -155,15 +155,18 @@ h1 i {
   transition: transform .2s, box-shadow .2s, background .25s, color .25s;
 }
 
-.enter-button b {
+.enter-arrow {
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
   background: var(--white);
   color: #000;
-  font-size: 1rem;
+  transition: background .25s, color .25s;
 }
+
+.enter-arrow svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: square; stroke-linejoin: miter; }
+.enter-button:hover .enter-arrow { background: #000; color: var(--white); }
 
 .enter-button:hover { background: var(--white); color: #000; transform: translateY(-2px); box-shadow: 0 9px 0 #30302e, 0 26px 64px rgba(0,0,0,.58); }
 .enter-button:active { transform: translateY(5px); box-shadow: 0 2px 0 #30302e; }
@@ -171,7 +174,8 @@ h1 i {
 
 .quality-picker { position: relative; }
 
-.quality-button {
+.quality-button,
+.shape-button {
   display: grid;
   align-content: center;
   justify-items: start;
@@ -186,22 +190,27 @@ h1 i {
   transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
 }
 
-.quality-button span {
+.quality-button span,
+.shape-button span {
   color: #777773;
   font-size: .55rem;
   font-weight: 700;
   letter-spacing: .12em;
 }
 
-.quality-button b {
+.quality-button b,
+.shape-button b {
   margin-top: 5px;
   font: 500 .7rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
   letter-spacing: .13em;
 }
 
 .quality-button:hover,
-.quality-button[aria-expanded="true"] { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.5); }
-.quality-button:active { transform: translateY(5px); box-shadow: 0 2px 0 #1d1d1c; }
+.quality-button[aria-expanded="true"],
+.shape-button:hover,
+.shape-button[aria-pressed="true"] { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.5); }
+.quality-button:active,
+.shape-button:active { transform: translateY(5px); box-shadow: 0 2px 0 #1d1d1c; }
 
 .quality-menu {
   position: absolute;
@@ -480,7 +489,8 @@ h1 i {
   h1 { font-size:clamp(3.8rem,20vw,6.8rem); }
   .cover-content > p { margin-top:28px; }
   .cover-actions { align-items:center; flex-direction:column; }
-  .quality-button { width:224px; min-width:224px; }
+  .quality-button,
+  .shape-button { width:224px; min-width:224px; }
   .quality-menu { bottom:auto; top:calc(100% + 11px); }
   .cover-index span:nth-child(2) { display:none; }
   .lab-brand { top:max(18px,env(safe-area-inset-top)); left:18px; }

@@ -26,7 +26,16 @@
           <p data-copy="coverSubtitle">A hand-controlled field of light.</p>
           <div class="cover-actions">
             <button class="enter-button" id="enterButton" type="button">
-              <span data-copy="enter">ENTER THE FIELD</span><b aria-hidden="true">↗</b>
+              <span data-copy="enter">ENTER THE FIELD</span>
+              <span class="enter-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M5 19 19 5" />
+                  <path d="M9 5h10v10" />
+                </svg>
+              </span>
+            </button>
+            <button class="shape-button" id="shapeButton" type="button" aria-pressed="false">
+              <span data-copy="galaxyForm">GALAXY FORM</span><b id="shapeLabel">SPIRAL</b>
             </button>
             <div class="quality-picker">
               <button class="quality-button" id="qualityButton" type="button" aria-expanded="false" aria-controls="qualityMenu">
